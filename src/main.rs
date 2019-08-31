@@ -16,23 +16,31 @@ fn gen_fibo(n: usize) -> Vec<i64> {
 
 thread_local!(static TABLE: Vec<i64> = gen_fibo(FIN));
 
+#[derive(Copy, Clone)]
 struct Meta {
     a: i64,
     b: i64,
-    c: i64,
+    c: i64, 
     loc: usize,
     value: i64,
 }
 
 impl Meta{
-fn upgrade(&this) -> Meta {
-    this
+fn upgrade(&self) -> Meta {
+    self.clone()
 }
 }
 
-fn upgrade_to_top(old: Meta) -> Meta {
-    old
+impl Meta {
+fn upgrade_plus(&self) -> Meta{
+    self.clone()
 }
+}
+
+fn range_upscale(left: &Meta, right: &Meta) -> Option<(Meta, Meta)> {
+    Some((left.clone(), right.clone()))
+}
+
 
 
 fn main() {
