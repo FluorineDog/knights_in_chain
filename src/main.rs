@@ -17,7 +17,7 @@ fn gen_fibo(n: usize) -> Vec<i64> {
 }
 
 lazy_static! {
-    static ref TABLE: Vec<i64> = gen_fibo(FIN)
+    static ref TABLE: Vec<i64> = gen_fibo(FIN);
 }
 
 #[derive(Copy, Clone)]
@@ -39,7 +39,7 @@ fn upgrade(&self) -> Meta {
 impl Meta {
 fn upgrade_leftmost(&self) -> Meta{
     let Meta{r0, r1, r2, level, value} = self.clone();
-    assert!(value == TABLE.get()[level]);
+    assert!(value == TABLE[level]);
     self.clone()
 }
 }
