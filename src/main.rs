@@ -83,12 +83,30 @@ impl Meta {
             r2,
             level,
             value,
-        } = self.clone();
-        let flag = (fibo(level + 1) - fibo(level)) % 2 == 0;
-        if flag {
-            (self.clone(), flag)
+        } = self.upgrade();
+
+        if (fibo(level) - fibo(self.level)) % 2 == 0 {
+            (
+                Meta {
+                    r0,
+                    r1: r1 + 1,
+                    r2,
+                    level,
+                    value: fibo(level) - value,
+                },
+                true,
+            )
         } else {
-            (self.clone(), flag)
+            (
+                Meta {
+                    r0,
+                    r1,
+                    r2,
+                    level,
+                    value,
+                },
+                false,
+            )
         }
     }
 }
