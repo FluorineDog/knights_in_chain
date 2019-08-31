@@ -1,5 +1,7 @@
-const FIN: usize = 83;
+#[macro_use]
+extern crate lazy_static;
 
+const FIN: usize = 83;
 fn gen_fibo(n: usize) -> Vec<i64> {
     let mut res = Vec::new();
     assert!(n > 2);
@@ -14,25 +16,30 @@ fn gen_fibo(n: usize) -> Vec<i64> {
     res
 }
 
-thread_local!(static TABLE: Vec<i64> = gen_fibo(FIN));
+lazy_static! {
+    static ref TABLE: Vec<i64> = gen_fibo(FIN)
+}
 
 #[derive(Copy, Clone)]
 struct Meta {
-    a: i64,
-    b: i64,
-    c: i64, 
-    loc: usize,
-    value: i64,
+    r0: i64, // pair sum = fib(n-1), left side
+    r1: i64, // pair sum = fib(n), left side
+    r2: i64, // pair sum = fib(n-1), left side
+    level: usize, 
+    value: i64, 
 }
 
 impl Meta{
 fn upgrade(&self) -> Meta {
-    self.clone()
+    let Meta{r0, r1, r2, level, value} = self.clone();
+    Meta{r0:r1, r1:r0 * 2 + r1, r2:r2 + r0 + 1, level:level + 1, value}
 }
 }
 
 impl Meta {
-fn upgrade_plus(&self) -> Meta{
+fn upgrade_leftmost(&self) -> Meta{
+    let Meta{r0, r1, r2, level, value} = self.clone();
+    assert!(value == TABLE.get()[level]);
     self.clone()
 }
 }
@@ -40,7 +47,6 @@ fn upgrade_plus(&self) -> Meta{
 fn range_upscale(left: &Meta, right: &Meta) -> Option<(Meta, Meta)> {
     Some((left.clone(), right.clone()))
 }
-
 
 
 fn main() {
