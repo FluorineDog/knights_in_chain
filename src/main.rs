@@ -1,3 +1,5 @@
+#![allow(non_snake_case)] 
+#![allow(unused)] 
 #[macro_use]
 extern crate lazy_static;
 
@@ -111,12 +113,20 @@ impl Meta {
     }
 }
 
+#[cfg(test)]
+mod Test{
+	#[test]
+    fn test1(){
+		// assert!(false);
+		
+	}
+}
+
 fn range_upscale(left: &Meta, right: &Meta) -> Option<(Meta, Meta)> {
-    Some((left.clone(), right.clone()))
+	None
+    // Some((left.clone(), right.clone()))
 }
 
 fn main() {
-    let fibo_vec = gen_fibo(FIN);
-    println!("{:?}", fibo_vec);
-    // println!("Hello, world!");
+	
 }
