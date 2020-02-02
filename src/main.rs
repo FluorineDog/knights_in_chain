@@ -1,5 +1,5 @@
-#![allow(non_snake_case)] 
-#![allow(unused)] 
+#![allow(non_snake_case)]
+#![allow(unused)]
 #[macro_use]
 extern crate lazy_static;
 
@@ -50,7 +50,6 @@ impl Meta {
             level,
             value,
         } = self.clone();
-
         Meta {
             r0: r1,
             r1: r0 * 2 + r1,
@@ -86,8 +85,9 @@ impl Meta {
             level,
             value,
         } = self.upgrade();
-
+		assert!(level == self.level + 1);
         if (fibo(level) - fibo(self.level)) % 2 == 0 {
+			let new_v = fibo(level) - value;
             (
                 Meta {
                     r0,
@@ -113,20 +113,47 @@ impl Meta {
     }
 }
 
-#[cfg(test)]
-mod Test{
-	#[test]
-    fn test1(){
-		// assert!(false);
-		
+const META_INIT: Meta = Meta {
+    r0: 0,
+    r1: 0,
+    r2: 0,
+    level: 2,
+    value: 1,
+};
+
+#[test]
+fn test_leftmost() {
+    let mut iter = META_INIT;
+
+    for level in 3..FIN {
+        iter = iter.upgrade_leftmost();
+        assert_eq!(iter.location(), 0);
+        assert_eq!(iter.level, level);
+        assert_eq!(iter.value, fibo(level));
+    }
+}
+
+#[test]
+fn test_rightmost() {
+    assert_eq!(2 + 2, 4);
+
+    let mut iter = META_INIT;
+	for level in 3..FIN {
+		let (new_iter, upd) = iter.upgrade_rightmost();
+		assert_eq!(new_iter.level, level, "wtf");
+		// assert_eq!(new_iter.location() as i64, fibo(level) - 1);
+		if upd {
+			assert_eq!(new_iter.value, (fibo(level) + fibo(level + 1)) / 2);
+		} else {
+			assert_eq!(new_iter.value, iter.value);
+		}
+		iter = new_iter;
 	}
 }
 
 fn range_upscale(left: &Meta, right: &Meta) -> Option<(Meta, Meta)> {
-	None
+    None
     // Some((left.clone(), right.clone()))
 }
 
-fn main() {
-	
-}
+fn main() {}
